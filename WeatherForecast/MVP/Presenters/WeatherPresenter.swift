@@ -9,10 +9,10 @@ import Foundation
 import UIKit
 
 protocol WeatherPresenterDelegate: AnyObject {
-    func presentData(data: Welcome)
+    func presentData(data: WeatherData)
 }
 
-typealias PresenterDelegate = WeatherPresenterDelegate & UIViewController
+typealias PresenterDelegate = WeatherPresenterDelegate & UIViewController 
 
 class WeatherPresenter {
     

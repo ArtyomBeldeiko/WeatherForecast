@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Welcome: Codable {
+struct WeatherData: Codable {
     let city, temperature, welcomeDescription: String
     let weatherPerDay: [WeatherPerDay]
     let forecast: [Forecast]

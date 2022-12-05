@@ -10,7 +10,7 @@ import UIKit
 class MainWeatherViewController: UIViewController {
     
     private let presenter = WeatherPresenter()
-    private var weatherData: Welcome?
+    private var weatherData: WeatherData?
     
     private let backgroundImage: UIImageView = {
         let imageView = UIImageView()
@@ -69,6 +69,7 @@ class MainWeatherViewController: UIViewController {
     
     private let upperTableView: UITableView = {
         let table = UITableView()
+        table.register(UpperTableViewCell.self, forCellReuseIdentifier: UpperTableViewCell.identifier)
         table.backgroundColor = .clear
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
@@ -116,6 +117,9 @@ class MainWeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        upperTableView.delegate = self
+        upperTableView.dataSource = self
         
         addSubviews()
         setConstraints()
@@ -252,13 +256,36 @@ class MainWeatherViewController: UIViewController {
 // MARK: WeatherPresenterDelegate
 
 extension MainWeatherViewController: WeatherPresenterDelegate {
-    func presentData(data: Welcome) {
+    func presentData(data: WeatherData) {
         weatherData = data
         
         DispatchQueue.main.async {
-            self.upperTableView.reloadData()
+//            self.upperTableView.reloadData()
             self.lowerTableView.reloadData()
         }
     }
+}
+
+// MARK: UITableViewDelegate, UITableViewDataSource
+
+extension MainWeatherViewController: UITableViewDelegate, UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: UpperTableViewCell.identifier, for: indexPath) as? UpperTableViewCell else { return UITableViewCell() }
+        cell.data = weatherData
+        return cell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 90.03
+    }
+    
+    
+    
+    
 }
 
