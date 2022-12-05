@@ -35,15 +35,7 @@ class MainWeatherViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
-    
-    private let weatherTypeLabel: UILabel = {
-        let label = UILabel()
-        label.font = UIFont(name: "Inter-Medium", size: 16)
-        label.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 1)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        return label
-    }()
-    
+        
     private let upperTableViewPlaceSection: UIView = {
         let view = UIView()
         view.backgroundColor = UIColor(red: 60 / 255, green: 78 / 255, blue: 101 / 255, alpha: 0.6)
@@ -56,6 +48,7 @@ class MainWeatherViewController: UIViewController {
         let label = UILabel()
         label.font = UIFont(name: "Inter-Medium", size: 14)
         label.textColor = UIColor(red: 255 / 255, green: 255 / 255, blue: 255 / 255, alpha: 1)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -109,38 +102,42 @@ class MainWeatherViewController: UIViewController {
     
     private let lowerTableView: UITableView = {
         let table = UITableView()
+        table.register(LowerTableViewCell.self, forCellReuseIdentifier: LowerTableViewCell.identifier)
         table.backgroundColor = .clear
+        table.separatorStyle = .singleLine
+        table.separatorColor = UIColor(red: 0.43, green: 0.472, blue: 0.529, alpha: 1)
+        table.separatorInset = .zero
+        table.showsVerticalScrollIndicator = false
         table.translatesAutoresizingMaskIntoConstraints = false
         return table
     }()
     
-    
+    private let lowerTableViewSeparator: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(red: 110 / 255, green: 120 / 255, blue: 135 / 255, alpha: 1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+
     override func viewDidLoad() {
         super.viewDidLoad()
         
         upperTableView.delegate = self
         upperTableView.dataSource = self
+        lowerTableView.delegate = self
+        lowerTableView.dataSource = self
         
         addSubviews()
         setConstraints()
         
         presenter.setViewDelegate(delegate: self)
         presenter.getWeatherData()
-        
     }
-    
-//    override func viewDidLayoutSubviews() {
-//        super.viewDidLayoutSubviews()
-//
-//        upperTableViewPlaceSection.addBlurEffect()
-//        lowerTableViewPlaceSection.addBlurEffect()
-//    }
-    
+        
     private func addSubviews() {
         self.view.addSubview(backgroundImage)
         self.view.addSubview(cityLabel)
         self.view.addSubview(temperatureLabel)
-        self.view.addSubview(weatherTypeLabel)
         self.view.addSubview(upperTableViewPlaceSection)
         self.view.addSubview(detailedWeatherInfoLabel)
         self.view.addSubview(upperTableViewPlaceSectionSeparator)
@@ -150,6 +147,7 @@ class MainWeatherViewController: UIViewController {
         self.view.addSubview(lowerTableViewSectionLabel)
         self.view.addSubview(lowerTableViewPlaceSectionSeparator)
         self.view.addSubview(lowerTableView)
+        self.view.addSubview(lowerTableViewSeparator)
     }
     
     private func setConstraints() {
@@ -167,19 +165,14 @@ class MainWeatherViewController: UIViewController {
         
         let temperatureLabelConstraints = [
             temperatureLabel.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 7.78),
-            temperatureLabel.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 139.5)
+            temperatureLabel.centerXAnchor.constraint(equalTo: self.view.centerXAnchor)
         ]
-        
-        let weatherTypeLabelConstraints = [
-            weatherTypeLabel.topAnchor.constraint(equalTo: cityLabel.bottomAnchor, constant: 6.28),
-            weatherTypeLabel.leadingAnchor.constraint(equalTo: temperatureLabel.trailingAnchor, constant: 5)
-        ]
-        
+                
         let upperTableViewPlaceSectionConstraints = [
-            upperTableViewPlaceSection.topAnchor.constraint(equalTo: weatherTypeLabel.bottomAnchor, constant: 57),
+            upperTableViewPlaceSection.topAnchor.constraint(equalTo: temperatureLabel.bottomAnchor, constant: 57),
             upperTableViewPlaceSection.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 24),
             upperTableViewPlaceSection.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -23),
-            upperTableView.heightAnchor.constraint(equalToConstant: 180)
+            upperTableViewPlaceSection.heightAnchor.constraint(equalToConstant: 180)
         ]
         
         let detailedWeatherInfoLabelConstraints = [
@@ -205,7 +198,7 @@ class MainWeatherViewController: UIViewController {
         
         let lowerTableViewPlaceSectionConstraints = [
             lowerTableViewPlaceSection.topAnchor.constraint(equalTo: upperTableViewPlaceSection.bottomAnchor, constant: 9),
-            lowerTableViewPlaceSection.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -20),
+            lowerTableViewPlaceSection.bottomAnchor.constraint(equalTo: self.view.bottomAnchor, constant: -25),
             lowerTableViewPlaceSection.leadingAnchor.constraint(equalTo: self.view.leadingAnchor, constant: 24),
             lowerTableViewPlaceSection.trailingAnchor.constraint(equalTo: self.view.trailingAnchor, constant: -24)
         ]
@@ -231,16 +224,21 @@ class MainWeatherViewController: UIViewController {
         ]
         
         let lowerTableViewConstraints = [
-            lowerTableView.topAnchor.constraint(equalTo: lowerTableViewPlaceSectionSeparator.bottomAnchor, constant: 11.5),
+            lowerTableView.topAnchor.constraint(equalTo: lowerTableViewPlaceSectionSeparator.bottomAnchor),
             lowerTableView.leadingAnchor.constraint(equalTo: lowerTableViewPlaceSection.leadingAnchor, constant: 14),
             lowerTableView.trailingAnchor.constraint(equalTo: lowerTableViewPlaceSection.trailingAnchor, constant: -14),
             lowerTableView.bottomAnchor.constraint(equalTo: lowerTableViewPlaceSection.bottomAnchor, constant: -33.08)
         ]
         
+        let lowerTableViewSeparatorConstraints = [
+            lowerTableViewSeparator.topAnchor.constraint(equalTo: lowerTableView.bottomAnchor),
+            lowerTableViewSeparator.heightAnchor.constraint(equalToConstant: 1),
+            lowerTableViewSeparator.leadingAnchor.constraint(equalTo: lowerTableView.leadingAnchor)
+        ]
+        
         NSLayoutConstraint.activate(backgroundImageConstraints)
         NSLayoutConstraint.activate(cityLabelConstraints)
         NSLayoutConstraint.activate(temperatureLabelConstraints)
-        NSLayoutConstraint.activate(weatherTypeLabelConstraints)
         NSLayoutConstraint.activate(upperTableViewPlaceSectionConstraints)
         NSLayoutConstraint.activate(detailedWeatherInfoLabelConstraints)
         NSLayoutConstraint.activate(upperTableViewPlaceSectionSeparatorConstraints)
@@ -250,42 +248,65 @@ class MainWeatherViewController: UIViewController {
         NSLayoutConstraint.activate(lowerTableViewSectionLabelConstraints)
         NSLayoutConstraint.activate(lowerTableViewPlaceSectionSeparatorConstraints)
         NSLayoutConstraint.activate(lowerTableViewConstraints)
+        NSLayoutConstraint.activate(lowerTableViewSeparatorConstraints)
     }
 }
 
-// MARK: WeatherPresenterDelegate
+// MARK: - WeatherPresenterDelegate
 
 extension MainWeatherViewController: WeatherPresenterDelegate {
     func presentData(data: WeatherData) {
         weatherData = data
         
         DispatchQueue.main.async {
-//            self.upperTableView.reloadData()
+            self.upperTableView.reloadData()
             self.lowerTableView.reloadData()
+            self.cityLabel.text = self.weatherData?.city ?? ""
+            self.temperatureLabel.text = self.weatherData?.temperature ?? ""
+            self.detailedWeatherInfoLabel.text = self.weatherData?.welcomeDescription ?? ""
         }
     }
 }
 
-// MARK: UITableViewDelegate, UITableViewDataSource
+// MARK: - UITableViewDelegate, UITableViewDataSource
 
 extension MainWeatherViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        if tableView == upperTableView {
+            return 1
+        } else if tableView == lowerTableView {
+            return weatherData?.forecast.count ?? 0
+        }
+        return 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: UpperTableViewCell.identifier, for: indexPath) as? UpperTableViewCell else { return UITableViewCell() }
-        cell.data = weatherData
-        return cell
+        if tableView == upperTableView {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: UpperTableViewCell.identifier, for: indexPath) as? UpperTableViewCell else { return UITableViewCell() }
+            cell.data = weatherData
+            cell.selectionStyle = .none
+            return cell
+        } else if tableView == lowerTableView {
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: LowerTableViewCell.identifier, for: indexPath) as? LowerTableViewCell else { return UITableViewCell() }
+            if let weatherData = weatherData {
+                cell.dayLabel.text = weatherData.forecast[indexPath.row].date
+                cell.weatherTypeImageView.image = weatherData.forecast[indexPath.row].weatherTypeIcon
+                cell.nightTemperatureLabel.text = String(describing: weatherData.forecast[indexPath.row].minTemperature)
+                cell.dayTemperatureLabel.text = String(describing: weatherData.forecast[indexPath.row].maxTemperature)
+            }
+            cell.selectionStyle = .none
+            return cell
+        }
+        return UITableViewCell()
     }
-    
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90.03
+        if tableView == upperTableView {
+            return 90.03
+        } else if tableView == lowerTableView {
+            return 47.0
+        }
+        return 0
     }
-    
-    
-    
-    
 }
 

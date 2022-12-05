@@ -20,9 +20,10 @@ class WeatherPerDayCollectionViewCell: UICollectionViewCell {
         return label
     }()
     
-    let weatherType: UILabel = {
-        let imageView = UILabel()
-        imageView.contentMode = .scaleAspectFill
+    let weatherType: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .white
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
@@ -66,11 +67,11 @@ class WeatherPerDayCollectionViewCell: UICollectionViewCell {
             weatherType.heightAnchor.constraint(equalToConstant: 28),
             weatherType.widthAnchor.constraint(equalToConstant: 28),
             weatherType.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor),
-            weatherType.topAnchor.constraint(equalTo: timeStampLabel.bottomAnchor, constant: 3.09)
+            weatherType.topAnchor.constraint(equalTo: timeStampLabel.bottomAnchor, constant: 5.09)
         ]
         
         let temperatureLabel = [
-            temperatureLabel.topAnchor.constraint(equalTo: weatherType.bottomAnchor, constant: 2.94),
+            temperatureLabel.topAnchor.constraint(equalTo: weatherType.bottomAnchor, constant: 4.94),
             temperatureLabel.centerXAnchor.constraint(equalTo: self.contentView.centerXAnchor)
         ]
         

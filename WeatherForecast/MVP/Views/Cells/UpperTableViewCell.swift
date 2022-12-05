@@ -52,14 +52,13 @@ extension UpperTableViewCell: UICollectionViewDelegate, UICollectionViewDataSour
         
         if let data = data {
             cell.timeStampLabel.text = data.weatherPerDay[indexPath.row].timestamp
-            cell.weatherType.text = data.weatherPerDay[indexPath.row].weatherType
+            cell.weatherType.image = data.weatherPerDay[indexPath.row].weatherTypeIcon
             cell.temperatureLabel.text = data.weatherPerDay[indexPath.row].temperature
             
             DispatchQueue.main.async { [weak self] in
                 self?.collectionView.reloadData()
             }
         }
-        
         return cell
     }
     

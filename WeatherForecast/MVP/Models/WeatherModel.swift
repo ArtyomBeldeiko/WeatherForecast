@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import UIKit
+
 
 struct WeatherData: Codable {
     let city, temperature, welcomeDescription: String
@@ -31,6 +33,16 @@ struct Forecast: Codable {
         case maxTemperature = "max_temperature"
         case weatherType = "weather_type"
     }
+    
+    var weatherTypeIcon: UIImage {
+        switch weatherType {
+        case "0": return UIImage(systemName: "cloud.fill")!
+        case "1": return UIImage(systemName: "sun.max.fill")!
+        case "2": return UIImage(systemName: "cloud.sun.fill")!
+        case "3": return UIImage(systemName: "cloud.snow.fill")!
+        default: return UIImage(systemName: "questionmark.circle.fill")!
+        }
+    }
 }
 
 struct WeatherPerDay: Codable {
@@ -41,5 +53,15 @@ struct WeatherPerDay: Codable {
         case timestamp
         case weatherType = "weather_type"
         case temperature, sunset
+    }
+    
+    var weatherTypeIcon: UIImage {
+        switch weatherType {
+        case "0": return UIImage(systemName: "cloud.fill")!
+        case "1": return UIImage(systemName: "sun.max.fill")!
+        case "2": return UIImage(systemName: "cloud.sun.fill")!
+        case "3": return UIImage(systemName: "cloud.snow.fill")!
+        default: return UIImage(systemName: "questionmark.circle.fill")!
+        }
     }
 }
