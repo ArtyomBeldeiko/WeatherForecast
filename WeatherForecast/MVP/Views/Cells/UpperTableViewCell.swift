@@ -20,6 +20,7 @@ class UpperTableViewCell: UITableViewCell {
         collectionView.register(WeatherPerDayCollectionViewCell.self, forCellWithReuseIdentifier: WeatherPerDayCollectionViewCell.identifier)
         collectionView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         collectionView.backgroundColor = .systemGroupedBackground
+        collectionView.showsHorizontalScrollIndicator = false
         return collectionView
     }()
     
